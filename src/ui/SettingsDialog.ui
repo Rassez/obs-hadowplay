@@ -322,6 +322,22 @@
         </property>
        </widget>
       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="notification_sound_checkbox">
+            <property name="text">
+            <string>OBSHadowplay.Settings.Notifications.CustomNotificationSound</string>
+            </property>
+        </widget>
+        </item>
+        <item>
+        <widget class="QPushButton" name="notification_sound_file">
+            <property name="text">
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+        </widget>
+      </item>
      </layout>
     </widget>
    </item>

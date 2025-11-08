@@ -8,6 +8,7 @@
 #include "plugin-support.h"
 #include "plugin-platform-helpers.hpp"
 #include "config/config.hpp"
+#include <QFileDialog>
 
 SettingsDialog::SettingsDialog() : QDialog(nullptr), ui(new Ui::SettingsDialog)
 {
@@ -44,6 +45,12 @@ SettingsDialog::SettingsDialog() : QDialog(nullptr), ui(new Ui::SettingsDialog)
 
 	connect(ui->exceptions_list, &QListWidget::itemSelectionChanged, this,
 		&SettingsDialog::exceptions_list_selected_changed);
+
+	connect(ui->notification_sound_checkbox, &QCheckBox::stateChanged, this,
+		&SettingsDialog::onNotificationSoundCheckboxToggled);
+
+	connect(ui->notification_sound_file, &QPushButton::clicked, this,
+		&SettingsDialog::onNotificationSoundFileButtonClicked);
 
 	exceptions_list_selected_changed();
 }
@@ -88,6 +95,12 @@ void SettingsDialog::showEvent(QShowEvent *event)
 
 	ui->show_desktop_notif_checkbox->setChecked(
 		Config::Inst().m_show_desktop_notif);
+
+	ui->notification_sound_file->setText(
+		QString::fromStdString(Config::Inst().m_notification_file));
+
+	ui->notification_sound_checkbox->setChecked(
+		!Config::Inst().m_notification_file.empty());
 
 	ui->exceptions_list->clear();
 	for (size_t i = 0; i < Config::Inst().m_exclusions.size(); ++i) {
@@ -139,6 +152,9 @@ void SettingsDialog::ApplyConfig()
 
 	Config::Inst().m_show_desktop_notif =
 		this->ui->show_desktop_notif_checkbox->isChecked();
+
+	Config::Inst().m_notification_file =
+		this->ui->notification_sound_file->text().toStdString();
 
 	int count = this->ui->exceptions_list->count();
 
@@ -199,4 +215,27 @@ void SettingsDialog::exceptions_list_selected_changed()
 void SettingsDialog::button_box_accepted()
 {
 	this->ApplyConfig();
+}
+
+void SettingsDialog::onNotificationSoundFileButtonClicked()
+{
+	QString filePath = QFileDialog::getOpenFileName(
+		this, tr("Select Notification Sound"), QString(),
+		tr("Audio Files (*.wav)"));
+
+	if (!filePath.isEmpty()) {
+		Config::Inst().m_notification_file = filePath.toStdString();
+		ui->notification_sound_file->setText(filePath);
+	}
+}
+
+void SettingsDialog::onNotificationSoundCheckboxToggled(bool checked)
+{
+	if (checked) {
+		ui->notification_sound_file->setEnabled(true);
+	} else {
+		ui->notification_sound_file->setEnabled(false);
+		ui->notification_sound_file->setText("");
+		Config::Inst().m_notification_file;
+	}
 }

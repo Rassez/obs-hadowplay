@@ -48,6 +48,9 @@ void Config::Save(obs_data_t *save_data)
 	obs_data_set_bool(hadowplay_data, CONFIG_SHOW_DESKTOP_NOTIF,
 			  this->m_show_desktop_notif);
 
+	obs_data_set_string(hadowplay_data, CONFIG_NOTIFICATION_SOUND_FILE,
+			    this->m_notification_file.c_str());
+
 	OBSDataArrayAutoRelease exclusions = obs_data_array_create();
 
 	for (size_t i = 0; i < this->m_exclusions.size(); ++i) {
@@ -116,6 +119,9 @@ void Config::Load(obs_data_t *load_data)
 	this->m_play_notif_sound =
 		obs_data_get_bool(hadowplay_data, CONFIG_PLAY_NOTIF_SOUND);
 
+	this->m_notification_file = 
+	 	obs_data_get_string(hadowplay_data, CONFIG_NOTIFICATION_SOUND_FILE);
+
 	this->m_show_desktop_notif =
 		obs_data_get_bool(hadowplay_data, CONFIG_SHOW_DESKTOP_NOTIF);
 
@@ -166,6 +172,9 @@ void Config::SetDefaults(obs_data_t *hadowplay_data)
 
 	obs_data_set_default_bool(hadowplay_data, CONFIG_PLAY_NOTIF_SOUND,
 				  true);
+
+	obs_data_set_default_string(hadowplay_data,CONFIG_NOTIFICATION_SOUND_FILE, 
+				  "");
 
 	obs_data_set_default_bool(hadowplay_data, CONFIG_SHOW_DESKTOP_NOTIF,
 				  true);

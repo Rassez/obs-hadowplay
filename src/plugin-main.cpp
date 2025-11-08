@@ -218,7 +218,8 @@ void obs_hadowplay_notify_saved(const std::string &title,
 				const std::string &filepath)
 {
 	if (Config::Inst().m_play_notif_sound == true) {
-		obs_hadowplay_play_notif_sound();
+		obs_hadowplay_play_notif_sound(
+			Config::Inst().m_notification_file);
 	}
 	if (Config::Inst().m_show_desktop_notif == true) {
 		obs_hadowplay_show_notification(title, filepath);
